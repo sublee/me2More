@@ -55,7 +55,7 @@ var me2more = function(limit) {
         /* more button */
         var more = new Element('div', {'class': 'more comment rerecom'});
         var more_anchor = new Element('a', {
-            href: '/' + el.username
+            href: '/' + el.username + '/me'
         }).update(messages.more);
         more.appendChild(more_anchor);
 
