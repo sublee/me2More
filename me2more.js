@@ -1,3 +1,12 @@
+// ==UserScript==
+// @name        me2More
+// @namespace   http://heungsub.net/apps/me2more/me2more.js
+// @include     http://me2day.net/*
+// @author      Lee, Heungsub
+// @homepage    http://heungsub.net/
+// @license     MIT LICENSE
+// ==/UserScript==
+
 /* default values */
 var limit = 3;
 var auto_extend = false;
@@ -12,6 +21,10 @@ var messages = {
 };
 
 /* toggle extend all */
+var extend_all = function() {
+    $$('.more a').each(function(el) { el.fire('me2more:extend'); });
+    auto_extend = true;
+}
 var toggle_extend_all = new Element('a', {href: '#'});
 toggle_extend_all.observe('click', function(e) {
     Event.stop(e);
@@ -19,8 +32,7 @@ toggle_extend_all.observe('click', function(e) {
         auto_extend = false;
         this.update(messages.extend_all_on);
     } else {
-        $$('.more a').each(function(el) { el.fire('me2more:extend'); });
-        auto_extend = true;
+        extend_all();
         this.update(messages.extend_all_off);
     }
 }).update(messages.extend_all_on);
@@ -237,6 +249,8 @@ Stream.get_more_posts = function() {
     });
 };
 
-if (me2more(limit)) {
+var userscript = !!$('--me2more-user-script');
+if (me2more(limit) && !userscript) {
     notify('"더 보기"가 부활했습니다.');
 }
+
