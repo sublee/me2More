@@ -7,27 +7,29 @@ var messages = {
     more: '더 보기',
     less: '감추기',
     loading: '불러오는 중',
-    extend_all: '모두 펼치기'
+    extend_all_on: '모두 펼치기',
+    extend_all_off: '원하는 것만 펼치기'
 };
 
-/* --- */
-var extend_all = function() {
-    $$('.more a').each(function(el) { el.fire('me2more:extend'); });
-    auto_extend = true;
-}
-var fold_all = function() {
-    $$('.more a').each(function(el) { el.fire('me2more:fold'); });
-    auto_extend = false;
-}
-var toggle_all = new Element('a', {href: '#'}).update(messages.extend_all);
-toggle_all.observe('click', function(e) {
+/* toggle extend all */
+var toggle_extend_all = new Element('a', {href: '#'});
+toggle_extend_all.observe('click', function(e) {
     Event.stop(e);
-    extend_all();
+    if (auto_extend) {
+        auto_extend = false;
+        this.update(messages.extend_all_on);
+    } else {
+        $$('.more a').each(function(el) { el.fire('me2more:extend'); });
+        auto_extend = true;
+        this.update(messages.extend_all_off);
+    }
+}).update(messages.extend_all_on);
+$('container_contents').insert({
+    before: toggle_extend_all.wrap(new Element('div', {
+        'class': 'setting_moa_view',
+        style: 'background: none; left: 38px; right: auto; padding-left: 0;'
+    }))
 });
-$('container_contents').insert({before: toggle_all.wrap(new Element('div', {
-    'class': 'setting_moa_view',
-    style: 'background: none; left: 38px; right: auto; padding-left: 0;'
-}))});
 
 /* me2day.notify() via me2day.js */
 var notify = notification_message.show_message.bind(notification_message);
@@ -64,7 +66,7 @@ var me2more = function(limit) {
         }
     });
 
-    /* Add `more` section */
+    /* add `more` section */
     heads.each(function(el) {
         /* sections */
         var sections = {};
